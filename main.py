@@ -22,6 +22,7 @@ ping = ctk.StringVar(value="1")
 sortLS = ctk.StringVar(value="1")
 kBot = ctk.StringVar(value="0")
 nerdV = ctk.StringVar(value="0")
+embedV = ctk.StringVar(value="0")
 
 MainAFrame = ctk.CTkFrame(app, corner_radius=10, border_color=("#00ffd0", "#00876e"), border_width=1, height=30,
                           fg_color='transparent')
@@ -40,6 +41,7 @@ tabview.add("CxNuker")
 tabview.add("CxMassDm")
 tabview.add("CxBotCom")
 tabview.add("RunBot")
+tabview.add("WebhookSpam")
 
 tabview.set("Info")
 
@@ -566,6 +568,94 @@ def runThreadBC():
 SBCButton = ctk.CTkButton(tabview.tab("RunBot"), text="Start BotCom", command=runThreadBC, border_width=1,
                           border_color=("#00ffd0", "#00876e"), fg_color='transparent', hover_color="#00876e")
 SBCButton.pack(padx=20, pady=10)
+
+# //////////////////////////////////////////////////// End ///////////////////////////////////////////////////////////////////////////////////////////////
+
+logTFrame = ctk.CTkFrame(tabview.tab("WebhookSpam"), corner_radius=10, border_color=("#00ffd0", "#00876e"), border_width=1,
+                         height=30,
+                         fg_color='transparent')
+logTFrame.pack()
+
+logT = ctk.CTkLabel(logTFrame, text="[Log]")
+logT.pack(padx=30, pady=5)
+
+
+def runThread():
+    threading.Thread(target=sendToWebhook).start()
+
+
+def sendToWebhook():
+    try:
+        async def anything(webhook2):
+            async with aiohttp.ClientSession() as session:
+                message = MessageE.get()
+                times = int(TimesE.get())
+                user = UserE.get()
+                numBr = 1
+                for i in range(times):
+                    numBr = numBr + 1
+                    webhook = Webhook.from_url(webhook2, session=session)
+                    if embedV.get() == "1":
+                        embed = discord.Embed(
+                            title=message)
+                        await webhook.send(embed=embed, username=user, avatar_url="")
+                    else:
+                        await webhook.send(username=user, content=message, avatar_url="")
+                    logT.configure(text=f"Send Message [Remaining: {str(numBr)}/{str(times)}", text_color="green")
+
+        webhook2 = tokenE.get()
+
+        loop = asyncio.new_event_loop()
+        loop.run_until_complete(anything(webhook2))
+        loop.close()
+        logT.configure(text=f"Done", text_color="magenta")
+    except:
+        logT.configure(text="Error Sending Message [Error Happened]", text_color="red")
+
+
+MainAFrame = ctk.CTkFrame(tabview.tab("WebhookSpam"), corner_radius=10, border_color=("#00ffd0", "#00876e"), border_width=1, height=30,
+                          fg_color='transparent')
+MainAFrame.pack(pady=50)
+
+mainLable = ctk.CTkLabel(MainAFrame, text="CxMessageSpam", font=tabview.tab("WebhookSpam").font)
+mainLable.pack(pady=30)
+
+MainBFrame = ctk.CTkFrame(tabview.tab("WebhookSpam"), corner_radius=10, border_color=("#00ffd0", "#00876e"), border_width=1, height=30,
+                          fg_color='transparent')
+MainBFrame.pack(pady=10)
+
+# Token Input
+tokenE = ctk.CTkEntry(MainBFrame, placeholder_text="Enter Webhook", height=38, font=("Trebuchet MS", 30),
+                      text_color="white",
+                      border_width=1, border_color=("#00ffd0", "grey"), width=400, fg_color='transparent')
+tokenE.pack(padx=20, pady=10)
+
+# Message Input
+MessageE = ctk.CTkEntry(MainBFrame, placeholder_text="Enter Message To Spam", height=38, font=("Trebuchet MS", 30),
+                        text_color="white",
+                        border_width=1, border_color=("#00ffd0", "grey"), width=400, fg_color='transparent')
+MessageE.pack(padx=20, pady=10)
+
+# Message Input
+TimesE = ctk.CTkEntry(MainBFrame, placeholder_text="How Many Times?", height=38, font=("Trebuchet MS", 30),
+                      text_color="white",
+                      border_width=1, border_color=("#00ffd0", "grey"), width=400, fg_color='transparent')
+TimesE.pack(padx=20, pady=10)
+
+# Message Input
+UserE = ctk.CTkEntry(MainBFrame, placeholder_text="User Name", height=38, font=("Trebuchet MS", 30),
+                     text_color="white",
+                     border_width=1, border_color=("#00ffd0", "grey"), width=400, fg_color='transparent')
+UserE.pack(padx=20, pady=10)
+
+embedS = ctk.CTkSwitch(MainBFrame, text="Send As Embed", variable=embedV, onvalue="1", offvalue="0",
+                       progress_color="#960325")
+embedS.pack(padx=20, pady=5)
+
+# Start
+StartButton = ctk.CTkButton(tabview.tab("WebhookSpam"), text="Start Spamming", border_width=1,
+                            border_color=("#0062ff", "#00876e"), fg_color='transparent', hover_color="#00876e",
+                            font=("Trebuchet MS", 30), text_color="white", command=runThread)
 
 # //////////////////////////////////////////////////// End ///////////////////////////////////////////////////////////////////////////////////////////////
 
