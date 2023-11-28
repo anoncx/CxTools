@@ -15,7 +15,7 @@ ctk.set_default_color_theme("dark-blue")
 
 # App Settings
 app = ctk.CTk()
-app.title("CxBotz")
+app.title("CxTools")
 app.geometry("700x500")
 app.resizable(height=False, width=False)
 app.font = ctk.CTkFont(size=20)
@@ -32,7 +32,7 @@ MainAFrame = ctk.CTkFrame(app, corner_radius=10, border_color=("#00ffd0", "#0087
 MainAFrame.pack(pady=10)
 
 # MainMenu Text
-MainText = ctk.CTkLabel(MainAFrame, text="CxBotz", font=("Trebuchet MS", 30))
+MainText = ctk.CTkLabel(MainAFrame, text="CxTools", font=("Trebuchet MS", 30))
 MainText.pack(pady=10, padx=10)
 
 tabview = ctk.CTkTabview(app, width=700, height=600, border_color="#00876e", border_width=2,
